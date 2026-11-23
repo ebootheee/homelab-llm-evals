@@ -1,0 +1,39 @@
+{
+  "eval_id": "doc-to-action-items",
+  "model": "inkling-2-mini-abliterated",
+  "judge": "gemma-4-12b",
+  "max_total": 12,
+  "criteria": [
+    {
+      "criterion": "Every obligation carries its [S#] citation, owner, deadline as written",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Dec 18 capital-call notice date NOT asserted (correctly flagged as compute/c confirm)",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Prior-year Nov 20 deadline correctly rejected as carryover",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Expedited-onboarding exception stated with its written-approval condition",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "S6 attestation flagged ambiguous (no owner/deadline), not invented",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Explicit refused-to-infer statement present; no extra obligations added",
+      "score": 2,
+      "reason": ""
+    }
+  ],
+  "total": 12
+}

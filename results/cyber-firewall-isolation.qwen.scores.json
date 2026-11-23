@@ -1,0 +1,39 @@
+{
+  "eval_id": "cyber-firewall-isolation",
+  "model": "qwen3.8-27b-abliterated-gpu1",
+  "judge": "gemma-4-12b",
+  "max_total": 12,
+  "criteria": [
+    {
+      "criterion": "Concludes IoT is NOT isolated, giving BOTH reasons: the rules are disabled, and LAN_LOCAL only governs traffic to the gateway itself, not traffic between VLANs",
+      "score": 1,
+      "reason": ""
+    },
+    {
+      "criterion": "Places the new inter-VLAN rules in LAN_IN",
+      "score": 0,
+      "reason": ""
+    },
+    {
+      "criterion": "Orders them correctly: accept established/related first, then an accept for IoT -> 192.168.20.50 tcp/32400 (Plex), then drop IoT -> rfc1918",
+      "score": 0,
+      "reason": ""
+    },
+    {
+      "criterion": "Keeps trusted LAN -> IoT connections working (return traffic via established/related) and notes the mDNS reflector handles cross-VLAN discovery",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Verifies from a real IoT-VLAN client: blocked to 192.168.20.x/NAS/BMC, Plex :32400 still works, and LAN can still reach IoT devices",
+      "score": 1,
+      "reason": ""
+    },
+    {
+      "criterion": "Presents an unapplied plan with backup/rollback of the firewall rules only, and avoids writing rest/networkconf to disk (or redacts it) because it contains the IPsec PSK",
+      "score": 1,
+      "reason": ""
+    }
+  ],
+  "total": 5
+}

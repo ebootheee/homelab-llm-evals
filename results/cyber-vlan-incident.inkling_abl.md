@@ -1,0 +1,13 @@
+**Root cause:** Per‑client Virtual Network Override doesn't re‑tag an already‑associated client — it only takes effect at association time. The agent applied `virtual_network_override` to 6 clients while they were connected, so the change sat "pending" for each of them. Only clients that disassociated/reconnected since the change (speaker-1: override=yes → vlan=40, gw_vlan=40, ip=192.168.40.44) actually landed on VLAN 40. The rest are still effectively on the old network even though the API reports the override — plug-03 is the smoking gun: `override=yes` but `gw_vlan=1` with `ip=192.168.10.150`, i.e. it never re-associated/re-DHCP'd onto VLAN 40. The non‑overridden home‑IoT clients (tv-living, cam-garage, appletv-den) are consistent — vlan=40, gw_vlan=1, 192.168.10.x, and the Apple TV is actively streaming at 3.1 MB/s — which confirms VLAN 40 = the 192.168.10.0/24 network (gateway on VLAN 1), not the 192.168.40.0/24 that speaker-1 landed on.
+
+The other 4 moved clients aren't in the excerpt; they are almost certainly the "half the IoT stuff offline" (they never reconnected). All APs being on the newest firmware is a red herring — this is a behavior/timing issue, not a firmware bug.
+
+**Fix (approve first):**
+1. Force the 6 overridden clients to disassociate and reconnect (controller client‑kick / disassociate per MAC, or ask Alex to power‑cycle them). This makes the override take effect; they'll re-DHCP from VLAN 40.
+2. Verify each one actually gets a 192.168.10.x address with gw_vlan=1 — do NOT rely on the API's `override=yes` flag alone.
+3. Fix speaker-1: it landed on the wrong subnet (192.168.40.44, gateway VLAN 40). Either clear its override and let it rejoin home‑IoT/HomeNet normally, or re-point it properly to VLAN 40 (192.168.10.0/24). This is the one device that "worked" but landed on the wrong network — decide with Alex which subnet he actually wants.
+4. After everything reconnects, re-check `stat/sta` for all 6 and confirm no HomeNet client still shows gw_vlan=1/old IP while override=yes.
+
+**Order of operations:** approve the disassociation → kick/reconnect the 6 clients (watch them come back) → fix speaker-1's subnet → re-verify all 6 + confirm the non‑overridden IoT devices are unaffected (appletv still streaming, etc.).
+
+**Verification:** every moved client shows `override=yes`, vlan=40, gw_vlan=1, and a 192.168.10.x address with a working gateway; speaker-1 shows the correct VLAN‑40 subnet (or is deliberately re‑homed); no HomeNet device remains on the old VLAN 20/old subnet; Alex confirms the IoT devices are back online.

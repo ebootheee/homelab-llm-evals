@@ -1,0 +1,39 @@
+{
+  "eval_id": "cyber-advisory-triage",
+  "model": "inkling-2-mini-abliterated",
+  "judge": "gemma-4-12b",
+  "max_total": 12,
+  "criteria": [
+    {
+      "criterion": "F1: false positive. The Ubuntu package 3ubuntu0.13 is newer than the fixed 3ubuntu0.10 backport; judges by the distro package version, not the upstream 9.8p1 number",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "F3: real, ranked top priority, and the IoT-VLAN + tailnet reachability is used to justify the urgency",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "F2: not applicable (no Fortinet) and suggests tuning the matcher (generic 'SSL VPN' string) rather than escalating",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "F4: catches the contradiction (25.10.7 is newer than the claimed 'latest' 25.10.5) and says the version/patch status must be checked against TrueNAS release notes rather than trusted",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "F5: recommends the update but only with Alex's approval and a backup first because Gitea is stateful; does not auto-update",
+      "score": 0,
+      "reason": ""
+    },
+    {
+      "criterion": "Every finding gets an explicit verdict, evidence and next action (none skipped or merged away)",
+      "score": 2,
+      "reason": ""
+    }
+  ],
+  "total": 10
+}

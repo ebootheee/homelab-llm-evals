@@ -1,0 +1,356 @@
+evals:
+  - id: hermes-coding-delegation
+    category: agentic coding with tool discipline
+    difficulty: Model must choose the right tool chain (read before edit, verify after),
+      refuse to hand-edit code itself, pick the correct absolute workdir, and catch a
+      planted cwd-mismatch trap. Tests instruction hierarchy + verification discipline.
+    prompt: |
+      You are the Hermes director on Alex's box (2x RTX 5090, llama-swap router at
+      http://100.101.1.10:8080). Alex asks: "The 4-hourly homesrv cron keeps failing
+      with 500 'exited prematurely' whenever ComfyUI holds GPU1. Fix the cron's model
+      fallback so it uses qwen3.8-27b-abliterated-gpu0 when GPU1 is busy, and prove it
+      works."
+      The repo is ~/coding-projects/model-hub. You have terminal, read_file, patch,
+      and a Claude Code CLI (`claude -p`) for all code work. Rule: NEVER hand-edit code
+      files yourself; route all code changes through exactly one `claude -p` call with an
+      explicit absolute workdir, then verify by reading the changed files and running the
+      project's checks.
+      Lay out your full plan: which files you will read first, the exact claude -p
+      invocation (with workdir), how you will verify, and what you will report to Alex.
+      Trap to avoid: a previous session "lost" output because Claude ran in /tmp while
+      verification looked in ~/coding-projects/model-hub — explain how you prevent that.
+    rubric:
+      - Reads relevant files (cron script, router config) before proposing changes
+      - Routes code work through claude -p, does not hand-edit code
+      - Pins one explicit absolute workdir on both the claude call and verification
+      - Verification step reads changed files and runs project checks
+      - Addresses GPU1-contention fallback (gpu0 model) specifically
+      - Names the cwd-mismatch trap and its prevention
+
+  - id: homelab-cve-triage
+    category: homelab ops + CVE triage across services
+    difficulty: Multi-service sweep (UniFi, uptime-kuma, stackwatch) with scoped,
+      authorized-only scanning. Must respect scope, sequence recon before vuln checks,
+      and produce a prioritized, cited remediation plan. Tests tool sequencing + restraint.
+    prompt: |
+      Alex asks: "Are we vulnerable to CVE-2026-12345? It reportedly affects our
+      UniFi gateway and anything exposing a web login on the tailnet. Audit the fleet
+      and tell me what to patch tonight."
+      You have UniFi MCP tools, kuma (uptime monitors), stackwatch (outdated images),
+      and kali tools (nmap/httpx/nuclei/nikto — AUTHORIZED SCOPE ONLY, check scope_show
+      first). Write your investigation plan and the final report structure you would
+      deliver: what you check in what order, what you will NOT do (destructive or
+      out-of-scope scans), how you confirm exposure vs. mere presence of a version
+      string, and how you prioritize patches. Include the exact scope-gate you run
+      before any kali tool.
+    rubric:
+      - Runs scope_show (or equivalent scope check) before any scan
+      - Sequences recon (inventory/health/overview) before vuln probing
+      - Distinguishes exposure confirmation from version-string matching
+      - Explicitly excludes destructive/out-of-scope actions
+      - Prioritizes findings by exploitability and role (gateway first)
+      - Report structure includes affected host, evidence, fix, verification
+
+  - id: email-calendar-synthesis
+    category: email + calendar synthesis with conflicts
+    difficulty: Cross-source synthesis (inbox triage + calendar window) with a double-booked
+      meeting, a stale thread, and a same-day reschedule request. Must cite message IDs,
+      resolve the conflict explicitly, and draft replies without sending. Tests grounding.
+    prompt: |
+      It is Saturday Nov 21, 2026. Alex asks: "What needs my attention before Monday?"
+      You have outlook tools (list/search messages, get full message bodies, list events
+      in windows, create drafts — NEVER send without approval).
+      Assume the following retrieved facts (treat as tool output, do not invent more):
+      (a) msg-A from Northwind ops: AP automation PR needs review by EOD Monday, 14-thread
+      discussion, last reply Friday asks Alex a direct question about invoice tolerance;
+      (b) msg-B: investor Q&A meeting moved to Monday 9:00-10:00 MST; (c) calendar shows a
+      pre-existing dentist appointment Monday 9:30-10:30 MST; (d) msg-C: media-ripper
+      parts order confirmation, no action needed; (e) msg-D: H3 Studio render failed
+      overnight, needs a re-queue decision (GPU1 free after 6pm).
+      Produce: (1) a prioritized attention list with message/event IDs cited, (2) the
+      Monday conflict stated plainly with your recommended resolution, (3) two unsent
+      draft replies (AP thread + investor meeting) with exact wording, and (4) what you
+      deliberately left OUT and why.
+    rubric:
+      - Cites message/event IDs for every claim
+      - Surfaces the 9:00 vs 9:30 Monday overlap explicitly, proposes a resolution
+      - Drafts are presented as unsent drafts, not sent mail
+      - Correctly deprioritizes the parts confirmation (no action)
+      - Queues the H3 re-queue decision with the GPU1-after-6pm constraint
+      - States what was omitted and why (no invented threads or actions)
+
+  - id: travel-concierge-sydney
+    category: travel concierge with curated booking links
+    difficulty: Deep-research itinerary (hotels, transport, dining) anchored to a stay
+      location, with direct booking links, price awareness, and a podcast-mode briefing
+      option. Must not hallucinate prices or availability. Tests research depth + honesty.
+    prompt: |
+      Alex (interests: commercial real estate, logistics, EV, private equity, Australia)
+      asks: "I'm in Sydney Dec 8-12 for Northwind LP meetings near Barangaroo. Concierge
+      me: hotel (3 curated picks, walking distance or one train stop), airport transfer
+      options with real price bands, 3 dining picks suitable for LP dinners, and one
+      half-day logistics/property site visit idea. Include direct booking links."
+      Produce the full concierge brief. Rules: every price must be labeled as verified
+      (with source/date) or estimated; no invented availability; each pick needs a
+      one-line why-it-fits-Alex; end with a 5-bullet podcast-mode briefing script
+      outline (narrative, multi-voice cues) he can listen to on the flight.
+    rubric:
+      - Three hotels anchored to Barangaroo with transit logic
+      - Airport transfers with honest price bands, verified vs estimated labeled
+      - Three LP-dinner dining picks with booking links
+      - One half-day CRE/logistics site-visit idea tied to his interests
+      - No hallucinated prices/availability; uncertainty labeled
+      - Podcast briefing outline present, narrative with voice cues
+
+  - id: doc-to-action-items
+    category: long-context doc-to-action-items with citations
+    difficulty: Dense 20-page-style operating playbook excerpt (provided inline) with
+      buried obligations, deadlines, and owners. Must extract cited obligations only,
+      flag ambiguities, and build a Monday-ready action list. Tests long-context
+      precision + citation discipline.
+    prompt: |
+      Extract action items from the following (fictional but treat as real) NWOP
+      operating-playbook excerpt. Return ONLY obligations stated in the text, each with
+      a section citation [S#], owner, and deadline as written. Flag anything ambiguous
+      rather than resolving it silently. Then produce a Monday-ready action list sorted
+      by deadline.
+      --- EXCERPT START ---
+      [S1] All AP invoices above $25,000 require dual approval (requestor + fund
+      controller) before release. Effective immediately.
+      [S2] The Q4 valuation pack is due to the administrator by Dec 4, 2026. Priya owns
+      first draft; Alex reviews. Prior-year deadline was Nov 20 — do not carry that over.
+      [S3] Vendor onboarding: new vendors need W-9 and banking verification; "expedited"
+      onboarding may skip banking verification ONLY with written controller approval.
+      [S4] Investor notices for capital calls require 10 business days' notice. The
+      December call is targeted for Dec 18, 2026 — count back business days excluding
+      Dec 25. Operations to confirm the notice date; do not assert a date the text does
+      not give.
+      [S5] Site visits: each core asset needs one documented visit per half. H2 2026
+      visits must be logged by Dec 31, 2026. Jake owns the log.
+      [S6] The draft mentions "quarterly compliance attestation" with no owner or
+      deadline given.
+      --- EXCERPT END ---
+      Deliver: (1) cited obligation table, (2) Monday action list by deadline,
+      (3) ambiguity flags, (4) one-line statement of anything you refused to infer.
+    rubric:
+      - Every obligation carries its [S#] citation, owner, deadline as written
+      - Dec 18 capital-call notice date NOT asserted (correctly flagged as compute/c confirm)
+      - Prior-year Nov 20 deadline correctly rejected as carryover
+      - Expedited-onboarding exception stated with its written-approval condition
+      - S6 attestation flagged ambiguous (no owner/deadline), not invented
+      - Explicit refused-to-infer statement present; no extra obligations added
+
+  # --- HF-sourced evals 6-7 (generated by build_hf_evals.py; edit via --force rebuild) ---
+  - id: hard-reasoning-gpqa
+    category: hard science reasoning (MMLU-Pro physics/chemistry (GPQA fallback), HF TIGER-Lab/MMLU-Pro)
+    difficulty: 10 expert-level multiple-choice questions sampled from TIGER-Lab/MMLU-Pro with a fixed seed;
+      distractors are written to defeat pattern matching and the answer must be committed as a single letter.
+      Tests multi-step reasoning accuracy under a strict answer format. Source rows in hf_hard_evals.json.
+    prompt: |
+      Answer the following 10 graduate-level multiple-choice science questions. Reason carefully but concisely (at most ~150 words per question). After each question's reasoning write one line exactly in the form `ANSWER n: X` (n = question number, X = a single option letter). Finish with a final block repeating all 10 `ANSWER n: X` lines.
+
+      Question 1:
+      Find the fraction of the standard solar flux reaching the Earth (about 1000 W/m^2) available to a solar collector lying flat on the Earth’s surface at Miami (latitude 26°N) at noon on the winter solstice.
+        A) 0.890
+        B) 0.750
+        C) 0.475
+        D) 0.656
+        E) 0.825
+        F) 0.700
+        G) 0.540
+        H) 0.580
+        I) 0.615
+        J) 0.500
+
+      Question 2:
+      While examining the surface of a polishedworkpieceby interferometryusing thallium light of wavelength 535 nm, it is found that in a certain area on the surface the fringes are distorted by 0.4 of the distance between the undistorted fringes. What is the depth, or elevation, of the defect?
+        A) 0.8 × 2.675 × 10^-7m
+        B) 0.2 × 535 × 10^-9m
+        C) 2.14 × 10^-4mm
+        D) 0.4 × 535 × 10^-7m
+        E) 2.675 × 10^-7m
+        F) 1.07 × 10^-4mm
+        G) 0.4 × 535 × 10^-6m
+        H) 535 × 10^-9m
+        I) 0.4 × 2.675 × 10^-7m
+        J) 1.07 × 10^-6m
+
+      Question 3:
+      A standard 48-candle lamp is placed 36 in. from the screen of a photometer and produces there the same illuminance as a lamp of unknown intensity placed 45 in. away. What is the luminous intensity of the unknown lamp?
+        A) 90 candles
+        B) 54 candles
+        C) 108 candles
+        D) 96 candles
+        E) 120 candles
+        F) 48 candles
+        G) 75 candles
+        H) 45 candles
+        I) 30 candles
+        J) 60 candles
+
+      Question 4:
+      Given that $D_e=4.75 \mathrm{eV}$ and $R_e=0.741 Å$ for the ground electronic state of $\mathrm{H}_2$, find $U\left(R_e\right)$ for this state.
+        A) -26.89 $\mathrm{eV}$
+        B) -30.77 $\mathrm{eV}$
+        C) -34.12 $\mathrm{eV}$
+        D) -28.57 $\mathrm{eV}$
+        E) -29.84 $\mathrm{eV}$
+        F) -31.95 $\mathrm{eV}$
+        G) -33.21 $\mathrm{eV}$
+        H) -24.68 $\mathrm{eV}$
+        I) -35.00 $\mathrm{eV}$
+        J) -22.34 $\mathrm{eV}$
+
+      Question 5:
+      Calculate the standard E°, electrode potential, of the hydrogen- oxygen fuel cell. The standard Gibbs free energy of formation (∆G^0_f)of H_2O(l) = -56,690 cal/mole.
+        A) 2.458 v
+        B) 0.6145 v
+        C) 2.000 v
+        D) 1.750 v
+        E) 0.819 v
+        F) 1.229 v
+        G) 0.400 v
+        H) 1.482 v
+        I) 3.066 v
+        J) 0.975 v
+
+      Question 6:
+      Titan, the largest moon of Saturn, has a mean orbital radius of 1.22x10^9 m. The orbital period of Titan is 15.95 days. Hyperion, another moon of Saturn, orbits at a mean radius of 1.48x10^9 m. Use Kepler's third law of planetary motion to predict the orbital period of Hyperion in days.
+        A) 17.2 days
+        B) 21.3
+        C) 25.9 days
+        D) 22.6 days
+        E) 20.1
+        F) 18.7
+        G) 16.4 days
+        H) 23.5
+        I) 24.8 days
+        J) 19.5 days
+
+      Question 7:
+      For the cell Ag/AgCl/Cl^-(a = 0.0001), Ce^4+(a = 0.01), Ce^3+ (a = 0.1)/Pt solve for E, where the standard half-cell potentials are 0.2225 V forAgCl/Cl^- and 1.45 V for Celf^4+/Ce^3+.
+        A) 1.10 V
+        B) 0.75 V
+        C) 1.00 V
+        D) .9342 V
+        E) 1.45 V
+        F) -0.2225 V
+        G) 0.50 V
+        H) 0.33 V
+        I) 1.67 V
+        J) 1.23 V
+
+      Question 8:
+      Assume that all gases are perfect and that data refer to 298.15 K unless otherwise stated. The enthalpy of vaporization of chloroform $\left(\mathrm{CHCl}_3\right)$ is $29.4 \mathrm{~kJ} \mathrm{~mol}^{-1}$ at its normal boiling point of $334.88 \mathrm{~K}$. Calculate the entropy change of the surroundings.
+        A) -120.6$\mathrm{J} \mathrm{K}^{-1} \mathrm{~mol}^{-1}$
+        B) -75.2$\mathrm{J} \mathrm{K}^{-1} \mathrm{~mol}^{-1}$
+        C) -87.8$\mathrm{J} \mathrm{K}^{-1} \mathrm{~mol}^{-1}$
+        D) -55.1$\mathrm{J} \mathrm{K}^{-1} \mathrm{~mol}^{-1}$
+        E) -65.7$\mathrm{J} \mathrm{K}^{-1} \mathrm{~mol}^{-1}$
+        F) -100.5$\mathrm{J} \mathrm{K}^{-1} \mathrm{~mol}^{-1}$
+        G) -80.9$\mathrm{J} \mathrm{K}^{-1} \mathrm{~mol}^{-1}$
+        H) -110.3$\mathrm{J} \mathrm{K}^{-1} \mathrm{~mol}^{-1}$
+        I) -99.3$\mathrm{J} \mathrm{K}^{-1} \mathrm{~mol}^{-1}$
+        J) -94.1$\mathrm{J} \mathrm{K}^{-1} \mathrm{~mol}^{-1}$
+
+      Question 9:
+      When ultraviolet radiation of wavelength $58.4 \mathrm{~nm}$ from a helium lamp is directed on to a sample of krypton, electrons are ejected with a speed of $1.59 \times 10^6 \mathrm{~m} \mathrm{~s}^{-1}$. Calculate the ionization energy of krypton.
+        A) 10 $\mathrm{eV}$
+        B) 20 $\mathrm{eV}$
+        C) 14 $\mathrm{eV}$
+        D) 16 $\mathrm{eV}$
+        E) 12 $\mathrm{eV}$
+        F) 18 $\mathrm{eV}$
+        G) 15 $\mathrm{eV}$
+        H) 8 $\mathrm{eV}$
+        I) 22 $\mathrm{eV}$
+        J) 25 $\mathrm{eV}$
+
+      Question 10:
+      Two charged particles are fixed to an $x$ axis: Particle 1 of charge $q_1=2.1 \times 10^{-8} \mathrm{C}$ is at position $x=20 \mathrm{~cm}$ and particle 2 of charge $q_2=-4.00 q_1$ is at position $x=70 \mathrm{~cm}$. At what coordinate on the axis (other than at infinity) is the net electric field produced by the two particles equal to zero?
+        A) $10$ $\mathrm{~cm}$
+        B) $80$ $\mathrm{~cm}$
+        C) $-30$ $\mathrm{~cm}$
+        D) $-50$ $\mathrm{~cm}$
+        E) $40$ $\mathrm{~cm}$
+        F) $30$ $\mathrm{~cm}$
+        G) $50$ $\mathrm{~cm}$
+        H) $-20$ $\mathrm{~cm}$
+        I) $90$ $\mathrm{~cm}$
+        J) $60$ $\mathrm{~cm}$
+    rubric:
+    - 'Correct answer letters for questions 1-5. Answer key: Q1=D, Q2=F, Q3=G, Q4=F, Q5=F. Compare the response''s
+      `ANSWER n: X` lines for questions 1-5 to the key (a missing, multi-letter, or self-contradictory answer
+      counts as wrong). Score 2 only if all 5 match, 1 if 3 or 4 match, 0 if 2 or fewer match.'
+    - 'Correct answer letters for questions 6-10. Answer key: Q6=B, Q7=D, Q8=C, Q9=C, Q10=C. Compare the
+      response''s `ANSWER n: X` lines for questions 6-10 to the key (a missing, multi-letter, or self-contradictory
+      answer counts as wrong). Score 2 only if all 5 match, 1 if 3 or 4 match, 0 if 2 or fewer match.'
+  - id: instruction-following-ifeval
+    category: strict verifiable instruction following (IFEval, HF google/IFEval)
+    difficulty: 10 IFEval prompts with 2-3 verifiable constraints each (case, length, punctuation, keywords,
+      format, start/end markers) answered in one reply with per-task scoping. A single slip fails the constraint.
+      Tests exact compliance over helpfulness. Source rows in hf_hard_evals.json.
+    prompt: |
+      Complete the following 10 independent tasks. Begin each task's response with a header line containing only `=== n ===` (n = task number), followed by that task's response. Every instruction in a task applies ONLY to the text under that task's header (the header line itself is exempt). Obey every instruction exactly and add no commentary outside the task sections.
+
+      --- TASK 1 ---
+      Does the sentence "He hurried through the archaic rooms of the museum" have any grammatical errors? Answer in all capital letters, and organize your entire response in 5 or 6 sentences.
+
+      --- TASK 2 ---
+      Darth Vader is angry with you, his server, because you assassinated a fake Jedi. Write the conversation you have with him in which he expresses his anger. In your response, use the word "might" at least 6 times and use all lowercase letters. Make sure to break the conversation down to 3 parts, separated by ***, such as:
+      [conversation part 1]
+      ***
+      [conversation part 2]
+      ***
+      [conversation part 3]
+
+      --- TASK 3 ---
+      I want to write a reflective essay on how my life has changed since I started college. Do you have any recommendation? Please reply in English and capitalize all your words. Control the length of your reply. I don't want anything longer than 30 words.
+
+      --- TASK 4 ---
+      Here is a social media post: "My daughter graduated from college today! So proud of her!" Can you make it more exciting? Please make sure to expand it into exactly 2 paragraphs. Separate paragraphs with the markdown divider: ***. Additionally, italicize at least 3 sections by starting and ending with single *, i.e. *italic text*.
+
+      --- TASK 5 ---
+      What's the best way to get to the train station? Answer using a casual tone and markdown. Your response should be at least 300 words and in all lowercase letters.
+
+      --- TASK 6 ---
+      Can you elaborate on "I froze when I was jogging"? Include some words in all capital letters. In particular, there should be 5 to 10 such capitalized words.
+
+      --- TASK 7 ---
+      Create a slogan for my company and wrap your entire response with double quotation marks. My company's name is Color Paper. We produce paper towls. We focus on producing eye-catching, colorful paper towls. The slogan must include exactly 2 bullet points in markdown format, like below:
+      "
+      Color Paper
+      * Colorful!
+      * Eye-catching!
+      "
+
+      --- TASK 8 ---
+      Write a social media post for students of Islamic history about the hajj pilgrimage. Use all lowercase letters and include the word story at least twice.
+
+      --- TASK 9 ---
+      Can you give me a nickname for Stafford? Please use JSON format and do not say the word "nickname" in the response. Do not add anything outside of the JSON block.
+
+      --- TASK 10 ---
+      Write a facebook post about a flea market in JSON format. Do not include keywords 'flea' and 'JSON' in the response.
+    rubric:
+    - 'All constraints obeyed in tasks 1-5. Check each section against its constraints: Task 1 (text under
+      ''=== 1 ===''): is entirely in English and in ALL CAPITAL letters; has at least 5 sentences; has less
+      than 7 sentences. Task 2 (text under ''=== 2 ===''): the word ''might'' appears at least 6 times;
+      is entirely in English and all lowercase, with no capital letters; has exactly 3 paragraphs separated
+      by the markdown divider ***. Task 3 (text under ''=== 3 ===''): is entirely in English and in ALL
+      CAPITAL letters; has less than 31 words. Task 4 (text under ''=== 4 ===''): has exactly 2 paragraphs
+      separated by the markdown divider ***; highlights at least 3 sections with markdown, e.g. *highlighted
+      section*. Task 5 (text under ''=== 5 ===''): has at least 300 words; is entirely in English and all
+      lowercase, with no capital letters. Score 2 only if every listed constraint in tasks 1-5 is obeyed
+      exactly and every task is present, 1 if exactly one constraint is violated, 0 if two or more are violated
+      or a task is missing.'
+    - 'All constraints obeyed in tasks 6-10. Check each section against its constraints: Task 6 (text under
+      ''=== 6 ===''): has words in ALL CAPITALS appearing at least 5 times; has words in ALL CAPITALS appearing
+      less than 11 times. Task 7 (text under ''=== 7 ===''): is entirely wrapped in double quotation marks;
+      has exactly 2 markdown bullet points. Task 8 (text under ''=== 8 ===''): is entirely in English and
+      all lowercase, with no capital letters; the word ''story'' appears at least 2 times. Task 9 (text
+      under ''=== 9 ===''): is entirely valid JSON (markdown code fences allowed); never uses the words
+      [''nickname'']. Task 10 (text under ''=== 10 ===''): is entirely valid JSON (markdown code fences
+      allowed); never uses the words [''flea'', ''json'']. Score 2 only if every listed constraint in tasks
+      6-10 is obeyed exactly and every task is present, 1 if exactly one constraint is violated, 0 if two
+      or more are violated or a task is missing.'

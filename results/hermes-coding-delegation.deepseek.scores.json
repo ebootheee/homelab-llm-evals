@@ -1,0 +1,39 @@
+{
+  "eval_id": "hermes-coding-delegation",
+  "model": "deepseek-v4.1-flash-abliterated",
+  "judge": "gemma-4-12b",
+  "max_total": 12,
+  "criteria": [
+    {
+      "criterion": "Reads relevant files (cron script, router config) before proposing changes",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Routes code work through claude -p, does not hand-edit code",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Pins one explicit absolute workdir on both the claude call and verification",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Verification step reads changed files and runs project checks",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Addresses GPU1-contention fallback (gpu0 model) specifically",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Names the cwd-mismatch trap and its prevention",
+      "score": 2,
+      "reason": ""
+    }
+  ],
+  "total": 12
+}

@@ -1,0 +1,39 @@
+{
+  "eval_id": "cyber-exposure-map",
+  "model": "inkling-2-mini-abliterated",
+  "judge": "gemma-4-12b",
+  "max_total": 12,
+  "criteria": [
+    {
+      "criterion": "Ranks homesrv first: its 5.15.0-201 kernel is below Ubuntu's 5.15.0-203.213 fix AND the probe confirmed MPTCP on gitea :3000 (LAN + tailnet) and ntfy :8888, correcting the draft's '0 exposure'",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Judges workstation's 7.0.0-43.43 kernel as PATCHED because it matches Ubuntu's fixed build, rejecting the draft's upstream-number comparison (so llama-swap's MPTCP listener is not exploitable)",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "States the tailscaled Serve ports are NOT kernel-MPTCP exposed because the probe fell back to plain TCP (userspace/netstack), correcting the draft",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Flags kidspc (7.0.0-42) and the Steam Deck (7.2.7 < 7.2.10) as vulnerable kernels that still need patching or mitigation even with no MPTCP listener today, instead of skipping them",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Flags nas01 kernel 6.12.105 as below the 6.12.113 fix, i.e. unpatched, correcting the draft's 'fine'",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Notes that with br_netfilter not loaded, same-bridge container traffic bypasses the nft prerouting drop, so MPTCP should also be disabled inside the gitea/ntfy containers (e.g. net.mptcp.enabled=0)",
+      "score": 0,
+      "reason": ""
+    }
+  ],
+  "total": 10
+}

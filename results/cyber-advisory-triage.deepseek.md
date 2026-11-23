@@ -1,0 +1,11 @@
+Ordered by priority:
+
+| Priority | Finding | Verdict | Evidence | Next action |
+|---|---|---|---|---|
+| **P1** | **F3 — Plex auth bypass** | **Real** | Plex `1.41.0` is older than fixed `1.41.3`; `:32400` is reachable from IoT VLAN and tailnet. | Update Plex to `>=1.41.3` immediately. Until patched, restrict/remove the IoT VLAN firewall rule and tailnet access to `:32400`. Verify version and exposure. |
+| **P2** | **F5 — Gitea image behind** | **Real** | `gitea/gitea:1.22` tag now points at a newer image, so deployed image is behind. Gitea is stateful (repos + DB). Policy: report, never auto-update; Alex approves. | Create report/ticket for Alex. Do **not** auto-update. Get approval, back up DB/repos, review release notes, update in a maintenance window, then pin the image digest. |
+| **P3** | **F1 — OpenSSH CVE-2024-6387** | **False positive** | Installed Ubuntu revision `3ubuntu0.13` is later than Ubuntu’s fixed `1:8.9p1-3ubuntu0.10`; Ubuntu backported the fix. Scanner likely compares only upstream `9.8p1`. | Verify package version with `dpkg-query`/`ssh -V`. If it is `1:8.9p1-3ubuntu0.13` or later, close/suppress the finding and add Ubuntu backport handling. If not, patch. |
+| **P4** | **F4 — TrueNAS version note** | **Unverified** | Note contradicts itself: installed `25.10.7` is newer than stated latest `25.10.5`, so “it’s current” does not follow. Could be nightly/dev build, stale “latest,” or typo. | Verify TrueNAS release channel and official latest stable. Confirm whether `25.10.7` is valid/current; update inventory and do not treat as current until verified. |
+| **P5** | **F2 — Fortinet FortiOS SSL-VPN KEV** | **False positive / not applicable** | Match came from UniFi description containing `"SSL VPN"`; inventory has no Fortinet products. | Close finding. Fix scanner rule to require Fortinet vendor/product/CPE, not free-text description. Exclude or sanitize the UniFi description string if needed. |
+
+Priority rationale: F3 is actively vulnerable and exposed; F5 is real drift on a stateful service and requires controlled approval; F1 is a high-impact CVE flag but is patched; F4 needs verification; F2 is scanner noise.

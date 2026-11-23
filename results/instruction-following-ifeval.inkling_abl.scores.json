@@ -1,0 +1,19 @@
+{
+  "eval_id": "instruction-following-ifeval",
+  "model": "inkling-2-mini-abliterated",
+  "judge": "gemma-4-12b",
+  "max_total": 4,
+  "criteria": [
+    {
+      "criterion": "All constraints obeyed in tasks 1-5. Check each section against its constraints: Task 1 (text under '=== 1 ==='): is entirely in English and in ALL CAPITAL letters; has at least 5 sentences; has less than 7 sentences. Task 2 (text under '=== 2 ==='): the word 'might' appears at least 6 times; is entirely in English and all lowercase, with no capital letters; has exactly 3 paragraphs separated by the markdown divider ***. Task 3 (text under '=== 3 ==='): is entirely in English and in ALL CAPITAL letters; has less than 31 words. Task 4 (text under '=== 4 ==='): has exactly 2 paragraphs separated by the markdown divider ***; highlights at least 3 sections with markdown, e.g. *highlighted section*. Task 5 (text under '=== 5 ==='): has at least 300 words; is entirely in English and all lowercase, with no capital letters. Score 2 only if every listed constraint in tasks 1-5 is obeyed exactly and every task is present, 1 if exactly one constraint is violated, 0 if two or more are violated or a task is missing.",
+      "score": 1,
+      "reason": ""
+    },
+    {
+      "criterion": "All constraints obeyed in tasks 6-10. Check each section against its constraints: Task 6 (text under '=== 6 ==='): has words in ALL CAPITALS appearing at least 5 times; has words in ALL CAPITALS appearing less than 11 times. Task 7 (text under '=== 7 ==='): is entirely wrapped in double quotation marks; has exactly 2 markdown bullet points. Task 8 (text under '=== 8 ==='): is entirely in English and all lowercase, with no capital letters; the word 'story' appears at least 2 times. Task 9 (text under '=== 9 ==='): is entirely valid JSON (markdown code fences allowed); never uses the words ['nickname']. Task 10 (text under '=== 10 ==='): is entirely valid JSON (markdown code fences allowed); never uses the words ['flea', 'json']. Score 2 only if every listed constraint in tasks 6-10 is obeyed exactly and every task is present, 1 if exactly one constraint is violated, 0 if two or more are violated or a task is missing.",
+      "score": 1,
+      "reason": ""
+    }
+  ],
+  "total": 2
+}

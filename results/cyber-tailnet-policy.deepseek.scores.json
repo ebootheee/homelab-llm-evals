@@ -1,0 +1,39 @@
+{
+  "eval_id": "cyber-tailnet-policy",
+  "model": "deepseek-v4.1-flash-abliterated",
+  "judge": "gemma-4-12b",
+  "max_total": 12,
+  "criteria": [
+    {
+      "criterion": "Spots that fd7a:115c:a1e0::/48 in G1 also covers the 4via6 range (fd7a:115c:a1e0:b1a::/64 etc.), so G1 grants ALL ports to 192.168.20.50 via its 4via6 address, defeating G2's tcp:2222-only limit",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Fixes it by narrowing G1's IPv6 destination to fd7a:115c:a1e0::/64 (the tailnet node range), keeping 4via6 reachable only through G2",
+      "score": 1,
+      "reason": ""
+    },
+    {
+      "criterion": "Notes G2 lets every member device reach the pre-boot SSH and suggests optionally narrowing src to Alex's own devices, while acknowledging the sk key + passphrase still protect it",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Treats the NFS 100.64.0.0/10 export as Alex's deliberate decision: may note the risk (any tailnet device can mount share) but does not silently 'fix' it",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Tests reachability with a TCP port check (e.g. nc -z) on both addresses from a peer and explicitly avoids ssh login probes because they burn cryptroot attempts",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Tests the negative case: other ports on 192.168.20.50 (IPv4 and 4via6) are NOT reachable from the tailnet after the fix",
+      "score": 2,
+      "reason": ""
+    }
+  ],
+  "total": 11
+}

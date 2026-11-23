@@ -1,0 +1,39 @@
+{
+  "eval_id": "travel-concierge-sydney",
+  "model": "meta/muse-ember",
+  "judge": "gemma-4-12b",
+  "max_total": 12,
+  "criteria": [
+    {
+      "criterion": "Three hotels anchored to Barangaroo with transit logic",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Airport transfers with honest price bands, verified vs estimated labeled",
+      "score": 1,
+      "reason": ""
+    },
+    {
+      "criterion": "Three LP-dinner dining picks with booking links",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "One half-day CRE/logistics site-visit idea tied to his interests",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "No hallucinated prices/availability; uncertainty labeled",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Podcast briefing outline present, narrative with voice cues",
+      "score": 2,
+      "reason": ""
+    }
+  ],
+  "total": 11
+}

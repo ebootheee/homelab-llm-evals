@@ -1,0 +1,39 @@
+{
+  "eval_id": "cyber-vlan-incident",
+  "model": "inkling-2-mini",
+  "judge": "gemma-4-12b",
+  "max_total": 12,
+  "criteria": [
+    {
+      "criterion": "Identifies the vlan=40 vs gw_vlan=1 mismatch (traffic landing on VLAN 1, 192.168.10.x leases) as the key evidence",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Attributes it to the per-client overrides being mishandled by the 6.x-firmware APs, which broke VLAN 40 for ALL clients on those APs including untouched Home-IoT ones, while the 8.x U7 Pro Max handled it",
+      "score": 1,
+      "reason": ""
+    },
+    {
+      "criterion": "Fix: remove ALL the virtual network overrides, and move devices to VLAN 40 by joining them to the Home-IoT SSID instead",
+      "score": 0,
+      "reason": ""
+    },
+    {
+      "criterion": "Does NOT propose firmware upgrades (already newest) or redesigning VLANs/SSIDs as the fix",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Avoids kicking appletv-den while it is streaming (or waits/asks), and notes clients may keep the wrong lease for a few minutes after the fix",
+      "score": 0,
+      "reason": ""
+    },
+    {
+      "criterion": "Verifies by re-reading stat/sta until vlan == gw_vlan and leases are 192.168.40.x",
+      "score": 2,
+      "reason": ""
+    }
+  ],
+  "total": 7
+}

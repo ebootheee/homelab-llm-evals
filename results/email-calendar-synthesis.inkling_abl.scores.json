@@ -1,0 +1,39 @@
+{
+  "eval_id": "email-calendar-synthesis",
+  "model": "inkling-2-mini-abliterated",
+  "judge": "gemma-4-12b",
+  "max_total": 12,
+  "criteria": [
+    {
+      "criterion": "Cites message/event IDs for every claim",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Surfaces the 9:00 vs 9:30 Monday overlap explicitly, proposes a resolution",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Drafts are presented as unsent drafts, not sent mail",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Correctly deprioritizes the parts confirmation (no action)",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "Queues the H3 re-queue decision with the GPU1-after-6pm constraint",
+      "score": 2,
+      "reason": ""
+    },
+    {
+      "criterion": "States what was omitted and why (no invented threads or actions)",
+      "score": 2,
+      "reason": ""
+    }
+  ],
+  "total": 12
+}

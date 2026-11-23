@@ -1,0 +1,19 @@
+{
+  "eval_id": "hard-reasoning-gpqa",
+  "model": "inkling-2-mini-abliterated",
+  "judge": "gemma-4-12b",
+  "max_total": 4,
+  "criteria": [
+    {
+      "criterion": "Correct answer letters for questions 1-5. Answer key: Q1=D, Q2=F, Q3=G, Q4=F, Q5=F. Compare the response's `ANSWER n: X` lines for questions 1-5 to the key (a missing, multi-letter, or self-contradictory answer counts as wrong). Score 2 only if all 5 match, 1 if 3 or 4 match, 0 if 2 or fewer match.",
+      "score": 1,
+      "reason": ""
+    },
+    {
+      "criterion": "Correct answer letters for questions 6-10. Answer key: Q6=B, Q7=D, Q8=C, Q9=C, Q10=C. Compare the response's `ANSWER n: X` lines for questions 6-10 to the key (a missing, multi-letter, or self-contradictory answer counts as wrong). Score 2 only if all 5 match, 1 if 3 or 4 match, 0 if 2 or fewer match.",
+      "score": 2,
+      "reason": ""
+    }
+  ],
+  "total": 3
+}
